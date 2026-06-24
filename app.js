@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 const path=require("path");
+const ejsMate = require("ejs-mate");
 
 main().then(() => {
     console.log("connected to DB");
@@ -19,7 +20,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
-
+app.engine("ejs", ejsMate);
+app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
     res.send("This is root");
 });
@@ -60,4 +62,10 @@ app.put("/listings/:id", async (req, res) => {
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id, {...req.body.Listing});
     res.redirect(`/listings/${id}`);
+});
+//delete a listing
+app.delete("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndDelete(id);
+    res.redirect("/listings");
 });
