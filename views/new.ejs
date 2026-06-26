@@ -6,16 +6,41 @@
     <title>Document</title>
 </head>
 <body>
+<br>
+<br>
 <h1>Create New Listing</h1>
+<div class="row mt-3">
+<div class="col-8 offset-2">
 <form method="POST" action="/listings">
-  <input name="listing[title]" placeholder="enter title" type="text" />
-  <textarea name="listing[description]" placeholder="enter description"></textarea>
-  <input name="listing[image]" placeholder="enter image URL/Link" type="text" />
-  <input name="listing[price]" placeholder="enter price" type="number" />
-  <input name="listing[country]" placeholder="enter country" type="text" />
-  <input name="listing[location]" placeholder="enter location" type="text" />
-  <button>Create Listing</button>
+  <div class="mb-3">
+  <label for="title" class="form-label">Title</label>
+  <input name="listing[title]" placeholder="Enter title" type="text" class="form-control" />
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea name="listing[description]"  class="form-control"></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="image" class="form-label">Image URL/Link</label>
+    <input name="listing[image]"  type="text" class="form-control" />
+  </div>
+  <div class="row">
+  <div class="mb-3 col-md-4">
+    <label for="price" class="form-label">Price</label>
+    <input name="listing[price]" placeholder="enter price" type="number" class="form-control" />
+  </div>
+  <div class="mb-3 col-md-8">
+    <label for="country" class="form-label">Country</label>
+    <input name="listing[country]" placeholder="India" type="text" class="form-control" />
+  </div>
+  </div>
+  <div class="mb-3">
+    <label for="location" class="form-label">Location</label>
+    <input name="listing[location]" placeholder="enter location" type="text" class="form-control" />
+  </div>
+  <button class="btn btn-dark add-btn mt-3">Add</button>
 </form>
-
+</div>
+</div>
 </body>
 </html>
