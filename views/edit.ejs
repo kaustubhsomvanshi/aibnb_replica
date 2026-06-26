@@ -6,16 +6,43 @@
     <title>Document</title>
 </head>
 <body>
-<h1>Edit your Listing</h1>
+<h1>Edit your Listing</h1><br><br>
+<div class="row mt-3">
+<div class="col-8 offset-2">
 <form method="POST" action="/listings/<%= listing.id %>?_method=PUT">
-  <input name="listing[title]" value="<%= listing.title %>" type="text" />
-  <textarea name="listing[description]"><%= listing.description %></textarea>
-  <input name="listing[image]" value="<%= listing.image %>" type="text" />
-  <input name="listing[price]" value="<%= listing.price %>" type="number" />
-  <input name="listing[country]" value="<%= listing.country %>" type="text" />
-  <input name="listing[location]" value="<%= listing.location %>" type="text" />
-  <button>Edit Listing</button>
+  <div class="mb-3">
+  <label for="title" class="form-label">Title</label>
+  <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" />
+  </div>
+  <br><br>
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea name="listing[description]" class="form-control"><%= listing.description %></textarea>
+  </div>
+  <br><br>
+  <div class="mb-3">
+    <label for="image" class="form-label">Image URL/Link</label>
+    <input name="listing[image]" value="<%= listing.image %>" type="text" class="form-control" />
+  </div>
+  <br><br>
+  <div class="row">
+    <div class="mb-3 col-md-8">
+      <label for="price" class="form-label">Price</label>
+      <input name="listing[price]" value="<%= listing.price %>" type="number" class="form-control" />
+    </div>
+    <div class="mb-3 col-md-8">
+      <label for="country" class="form-label">Country</label>
+      <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" />
+    </div>
+  </div>
+  <br><br>
+  <div class="mb-3">
+    <label for="location" class="form-label">Location</label>
+    <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" />
+  </div>
+  <button class="btn btn-dark edit-btn mt-3">Edit Listing</button>
 </form>
-
+</div>
+</div>
 </body>
 </html>
