@@ -10,10 +10,15 @@ const listingSchema = new Schema({
   image: {
     type: String,
     default: "https://www.flaticon.com/free-icon/resort_6254195",
-    set: (v) =>
-      v === ""
-        ? "https://www.flaticon.com/free-icon/resort_6254195"
-        : v,
+    set: (v) => {
+      if (v === "" || v == null) {
+        return "https://www.flaticon.com/free-icon/resort_6254195";
+      }
+      if (typeof v === "object" && v !== null && typeof v.url === "string") {
+        return v.url;
+      }
+      return v;
+    },
   },
   price: Number,
   location: String,
