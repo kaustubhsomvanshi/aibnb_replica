@@ -15,6 +15,15 @@
         <a class="nav-link" href="/listings/new">Become a host</a>
         <a class="nav-link nav-pill" href="/listings/new">Add listing</a>
       </div>
+      <div class="navbar-nav align-items-center gap-2 ms-auto">
+        <% if (currUser) { %>
+          <span class="nav-link">Welcome, <%= currUser.username %>!</span>
+          <a class="nav-link" href="/logout">Log out</a>
+        <% } else { %>
+          <a class="nav-link" href="/login">Log in</a>
+          <a class="nav-link" href="/signup">Sign up</a>
+        <% } %>
+      </div>
     </div>
   </div>
 </nav>
