@@ -6,7 +6,8 @@ const ExpressError = require("../utils/expressError");
 const { listingSchema, reviewSchema } = require("../schema.js");
 const Review = require("../models/review");
 const Listing = require("../models/listings");
-
+const { isLoggedIn } = require('../middleware');
+consr validateReview = require("../middleware").validateReview;
 const normalizeBracketedBody = (body) => {
     if (typeof body !== "object" || body === null) return body;
     const normalized = {};
@@ -50,10 +51,10 @@ const validateReview = (req, res, next) => {
     next();
 };
 //add a review to a listing
-router.post("/", validateReview, wrapAsync(async (req, res) => {
+router.post("/", validateReview,isLoggedIn, wrapAsync(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
-
+    newReview.author = req.user._id;
     listing.reviews.push(newReview._id);
 
     await newReview.save();

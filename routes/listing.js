@@ -5,7 +5,7 @@ const wrapAsync = require("../utils/wrapAsync");
 const ExpressError = require("../utils/expressError");
 const { listingSchema, reviewSchema } = require("../schema.js");
 const Listing = require("../models/listings");
-const { isLoggedIn } = require("../middleware.js");
+const { isLoggedIn.isOwner } = require("../middleware.js");
 
 router.get("/", wrapAsync(async (req, res) => {
     const allListings = await Listing.find({});
@@ -18,7 +18,7 @@ router.get("/new", (req, res) => {
 
 router.get("/:id/edit", wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews")  ;
+    const listing = await Listing.findById(id).populate("reviews").populate("owner"); ;
     if (!listing) throw new ExpressError(404, "Listing not found");
     res.render("edit.ejs", { listing });
 }));
@@ -81,6 +81,7 @@ router.post(
   isLoggedIn,
   wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id; // Set the owner to the logged-in user's ID
     await newListing.save();
     res.redirect("/");
   })
@@ -88,7 +89,7 @@ router.post(
 
 
 //update a listing
-router.put("/:id", validateListing, isLoggedIn, wrapAsync(async (req, res) => {
+router.put("/:id", validateListing, isLoggedIn,isOwner, wrapAsync(async (req, res) => {
     let { id } = req.params;
     const listingData = req.body.listing;
     const listing = await Listing.findByIdAndUpdate(id, { ...listingData }, { runValidators: true, new: true });
