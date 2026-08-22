@@ -1,10 +1,7 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const reviewSchema = new mongoose.Schema({
-  author: {
-    type: String,
-    default: "Guest reviewer",
-  },
   comment: {
     type: String,
   },

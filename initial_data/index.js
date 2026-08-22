@@ -1,6 +1,7 @@
 const initData = require("./data.js");
 const Listing = require("../models/listings");
 const Review = require("../models/review");
+const User = require("../models/user");
 
 const sampleReviewTemplates = [
   { author: "Alex", rating: 5, comment: "Amazing stay with a stunning view and wonderful hospitality." },
@@ -20,25 +21,50 @@ const sampleReviewTemplates = [
 const buildReviewsForListing = (index) => {
   const first = sampleReviewTemplates[index % sampleReviewTemplates.length];
   const second = sampleReviewTemplates[(index + 3) % sampleReviewTemplates.length];
+  const withoutAuthor = ({ author, ...review }) => review;
 
   return [
-    { ...first },
+    withoutAuthor(first),
     {
-      ...second,
+      ...withoutAuthor(second),
       rating: Math.min(5, second.rating + (index % 2 === 0 ? 0 : -1)),
       comment: `${second.comment} We would recommend it.`,
     },
   ];
 };
 
+const createSeedUsers = async () => {
+  const usernames = [...new Set(sampleReviewTemplates.map((review) => review.author))];
+  const users = {};
+
+  for (const username of usernames) {
+    const user = new User({
+      username,
+      email: `${username.toLowerCase()}@example.com`,
+    });
+    users[username] = await User.register(user, "password123");
+  }
+
+  return users;
+};
+
 const initDB = async () => {
   await Listing.deleteMany({});
   await Review.deleteMany({});
+  await User.deleteMany({});
+  const users = await createSeedUsers();
+  const userList = Object.values(users);
   const listings = await Listing.insertMany(initData.data);
 
   for (let i = 0; i < listings.length; i++) {
     const listing = listings[i];
-    const reviews = buildReviewsForListing(i);
+    listing.owner = userList[i % userList.length]._id;
+    await listing.save();
+
+    const reviews = buildReviewsForListing(i).map((review) => ({
+      ...review,
+      author: userList[(i + review.rating) % userList.length]._id,
+    }));
     const createdReviews = await Review.insertMany(reviews);
     listing.reviews.push(...createdReviews.map((review) => review._id));
     await listing.save();

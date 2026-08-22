@@ -6,8 +6,7 @@ const ExpressError = require("../utils/expressError");
 const { listingSchema, reviewSchema } = require("../schema.js");
 const Review = require("../models/review");
 const Listing = require("../models/listings");
-const { isLoggedIn } = require('../middleware');
-consr validateReview = require("../middleware").validateReview;
+const { isLoggedIn ,isReviewAuthor} = require('../middleware');
 const normalizeBracketedBody = (body) => {
     if (typeof body !== "object" || body === null) return body;
     const normalized = {};
@@ -65,7 +64,7 @@ router.post("/", validateReview,isLoggedIn, wrapAsync(async (req, res) => {
 }));
 //Delete Review Route
 router.delete(
-  "/:reviewId",
+  "/:reviewId",isLoggedIn,isReviewAuthor,
   wrapAsync(async (req, res) => {
     let { id, reviewId } = req.params;
 
