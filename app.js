@@ -15,6 +15,7 @@ const ExpressError = require("./utils/expressError");
 const { listingSchema, reviewSchema } = require("./schema.js");
 const Review = require("./models/review"); 
 const listings = require("./routes/listing.js"); 
+const users = require("./routes/user.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");   
@@ -93,6 +94,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/listings",listings);
+app.use("/", users);
 app.use("/listings/:id/reviews", require("./routes/review.js"));
 
 app.use((req, res, next) => {
