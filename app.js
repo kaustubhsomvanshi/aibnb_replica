@@ -1,3 +1,6 @@
+if(process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
 const express = require("express");
 const querystring = require("querystring");
 const app = express();
@@ -5,8 +8,6 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
-const Listing = require("./models/listings");
-const { initDB } = require("./initial_data");
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 const path=require("path");
 const ejsMate = require("ejs-mate");
@@ -20,9 +21,11 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");   
 
-main().then(async () => {
+main().then(() => {
     console.log("connected to DB");
-    await initDB();
+    app.listen(8080, () => {
+        console.log("Server is running on port 8080");
+    });
 }).catch(err => {
     console.log(err);
 })
@@ -90,9 +93,8 @@ app.use((req, res, next) => {
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
-    res.send("This is root");
+    res.redirect("/listings");
 });
-
 app.use("/listings",listings);
 app.use("/", users);
 app.use("/listings/:id/reviews", require("./routes/review.js"));
@@ -107,8 +109,4 @@ app.use((err, req, res, next) => {
         return res.status(statusCode).render("error", { err });
     }
     res.status(statusCode).json({ error: message });
-});
-
-app.listen(8080, () => {
-    console.log("Server is running on port 8080");
 });

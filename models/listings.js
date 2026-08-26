@@ -9,18 +9,9 @@ const listingSchema = new Schema({
   },
   description: String,
   image: {
-    type: String,
-    default: "https://www.flaticon.com/free-icon/resort_6254195",
-    set: (v) => {
-      if (v === "" || v == null) {
-        return "https://www.flaticon.com/free-icon/resort_6254195";
-      }
-      if (typeof v === "object" && v !== null && typeof v.url === "string") {
-        return v.url;
-      }
-      return v;
-    },
-  },
+    url: String,
+    filename: String,
+  },  
   price: Number,
   location: String,
   country: String,

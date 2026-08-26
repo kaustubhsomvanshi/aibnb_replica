@@ -6,11 +6,14 @@ const ExpressError = require("../utils/expressError");
 const { listingSchema, reviewSchema } = require("../schema.js");
 const { isLoggedIn, isOwner } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
-router.route("/").get(wrapAsync(listingController.index)).post(isLoggedIn, validateListing, wrapAsync(listingController.create));
-router.get("/new", listingController.renderNewForm);
-router.route("/:id").get(wrapAsync(listingController.show)).put(isLoggedIn, isOwner, validateListing, wrapAsync(listingController.update)).delete(isLoggedIn, isOwner, wrapAsync(listingController.destroy));
-router.get("/:id/edit", wrapAsync(listingController.renderEditForm));
+const multer = require("multer");
+const { storage } = require("../views/cloudConfig.js");
+const upload = multer({ storage });
 
+router.route("/").get(wrapAsync(listingController.index)).post(isLoggedIn, upload.single("listing[image]"), validateListing, wrapAsync(listingController.create));
+router.get("/new", isLoggedIn, listingController.renderNewForm);
+router.route("/:id").get(wrapAsync(listingController.show)).put(isLoggedIn, isOwner, upload.single("listing[image]"), validateListing, wrapAsync(listingController.update)).delete(isLoggedIn, isOwner, wrapAsync(listingController.destroy));
+router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(listingController.renderEditForm));
 const normalizeBracketedBody = (body) => {
     if (typeof body !== "object" || body === null) return body;
     const normalized = {};
@@ -36,7 +39,7 @@ const normalizeBracketedBody = (body) => {
     return normalized;
 };
 
-const validateListing = (req, res, next) => {
+function validateListing(req, res, next) {
     let body = req.body;
     if (typeof body === "string") {
         body = querystring.parse(body);
@@ -52,6 +55,6 @@ const validateListing = (req, res, next) => {
     }
     req.body = value;
     next();
-};
+}
 
 module.exports = router;

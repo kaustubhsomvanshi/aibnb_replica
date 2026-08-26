@@ -2,6 +2,7 @@ const initData = require("./data.js");
 const Listing = require("../models/listings");
 const Review = require("../models/review");
 const User = require("../models/user");
+const mongoose = require("mongoose");
 
 const sampleReviewTemplates = [
   { author: "Alex", rating: 5, comment: "Amazing stay with a stunning view and wonderful hospitality." },
@@ -73,3 +74,17 @@ const initDB = async () => {
 };
 
 module.exports = { initDB };
+
+if (require.main === module) {
+  require("dotenv").config();
+  const mongoUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
+
+  mongoose.connect(mongoUrl)
+    .then(initDB)
+    .then(() => mongoose.disconnect())
+    .catch(async (err) => {
+      console.error(err);
+      await mongoose.disconnect();
+      process.exitCode = 1;
+    });
+}

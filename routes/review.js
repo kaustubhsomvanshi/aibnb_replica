@@ -31,7 +31,7 @@ const normalizeBracketedBody = (body) => {
     return normalized;
 };
 
-const validateReview = (req, res, next) => {
+function validateReview(req, res, next) {
     let body = req.body;
     if (typeof body === "string") {
         body = querystring.parse(body);
@@ -47,7 +47,7 @@ const validateReview = (req, res, next) => {
     }
     req.body = value;
     next();
-};
+}
 //add a review to a listing
 router.post("/", validateReview, isLoggedIn, wrapAsync(reviewController.create));
 //Delete Review Route

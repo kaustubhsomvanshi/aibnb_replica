@@ -3,36 +3,37 @@
     <div class="col-8 offset-2">
         <h3>Listing Details</h3>
         <div class="card">
-        <img src="<%= listing.image %>" class="card-img-top show-img" alt="listing_image">
+        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
         <div class="card-body">
         <i>Owned by <%= listing.owner?.username || "Unknown User" %></i>
         <p class="card-text"><b><%= listing.title %></b><br><%= listing.description %><br>Price: &#8377;<%= listing.price.toLocaleString("en-IN") %><br> <%= listing.location %><br>Country: <%= listing.country %></p>
         </div>
         <div class="d-flex gap-2 mt-3">
-            <% if (listing.owner && req.user && listing.owner._id.equals(req.user._id)) { %>
+            <% if (listing.owner && currUser && listing.owner._id.equals(currUser._id)) { %>
                 <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark">Edit</a>
                 <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
                     <button class="btn btn-outline-danger">Delete</button>
                 </form>     
             <% } %>
-            <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark">Edit</a>
-            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-                <button class="btn btn-outline-danger">Delete</button>
-            </form>
         </div>
 
         </div>
 
-    
+        <section class="listing-map-section" aria-labelledby="listing-location-heading">
+            <h4 id="listing-location-heading">Where you'll be</h4>
+            <div id="listing-map" class="listing-map" data-location="<%= listing.location %>" data-country="<%= listing.country %>">
+                <p class="map-status">Loading map...</p>
+            </div>
+        </section>
+
     </div>
-    <%if (req.user) { %>    
+    <% if (currUser) { %>
     <div class="col-8 offset-3">
         <h4>Leave a Review</h4>
         <form class="mb-3 needs-validation" action="/listings/<%= listing._id %>/reviews" method="POST" novalidate >
             <div class="mb-3 mt-3">
                 <fieldset class="starability-slot">
-                    <label for="rating">Rating</label>
-                    <label for="no-rate">No rating</label>
+                    <legend class="form-label">Rating</legend>
                     <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked />
                     
                         <input type="radio" id="first-rate1" name="review[rating]" value="1" />
@@ -55,18 +56,26 @@
         </form>
     </div>
     <% } %>
-    <p><b>All Reviews</b></p>
-    <% for(review of listing.reviews) { %>
-    <div class="card col-5 ms-3 mb-3">
-    <div class="card-body">
-        <h5 class="card-title"><%= review.author.username  %></h5>
-        <p class="starability-result" data-rating="<%= review.rating %>">Rated: <%= review.rating %> stars</p>
-        <p class="card-text"><%= review.comment %></p>
-        <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-        <button class="btn btn-sm btn-dark">Delete</button>
-        </form>
+    <div class="col-8 offset-2 mt-4">
+        <h4>All Reviews</h4>
+        <div class="row g-3">
+            <% for(review of listing.reviews) { %>
+            <div class="col-md-6">
+                <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><%= review.author.username  %></h5>
+                    <% const safeRating = Math.max(1, Math.min(5, Number(review.rating) || 1)); %>
+                    <p class="starability-result" data-rating="<%= safeRating %>">Rated: <%= safeRating %> stars</p>
+                    <p class="card-text"><%= review.comment %></p>
+                    <% if (currUser && review.author && review.author._id.equals(currUser._id)) { %>
+                        <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                        <button class="btn btn-sm btn-dark">Delete</button>
+                        </form>
+                    <% } %>
+                </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
     </div>
-    </div>
-    </div>
-    <% } %>
 </div>
