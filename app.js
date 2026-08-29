@@ -8,12 +8,13 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
-const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/roamly";
+const dbUrl = process.env.ATLASDB_URL;
 const path=require("path");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/expressError");
 const { listingSchema, reviewSchema } = require("./schema.js");
+const MongoStore = require("connect-mongo").default;
 const Review = require("./models/review"); 
 const listings = require("./routes/listing.js"); 
 const users = require("./routes/user.js");
@@ -31,7 +32,7 @@ main().then(() => {
 })
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }
 
 const normalizeBracketedBody = (body) => {
@@ -66,8 +67,16 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, type: ["application/x-www-form-urlencoded", "text/html"] }));
 app.use(methodOverride("_method"));
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 3600,
+});
 app.use(session({
-    secret: "thisshouldbeabettersecret!",
+    store: store,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
