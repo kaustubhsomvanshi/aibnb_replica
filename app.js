@@ -107,17 +107,6 @@ app.get("/", (req, res) => {
 app.use("/listings",listings);
 app.use("/", users);
 app.use("/listings/:id/reviews", require("./routes/review.js"));
-
-app.get("/seed-database-now", async (req, res) => {
-    try {
-        const { initDB } = require("./initial_data/index.js");
-        await initDB();
-        res.send("Database seeded successfully! You can now ask me to remove this route.");
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error seeding database: " + err.message);
-    }
-});
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page Not Found!"));
 });
