@@ -1,13 +1,25 @@
 const Listing = require("../models/listings");
 const ExpressError = require("../utils/expressError");
+const { categories } = require("../utils/categories");
 
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find({});
-    res.render("index.ejs", { allListings });
+    const searchQuery = req.query.q?.trim();
+    const filter = req.query.category ? { category: req.query.category } : {};
+
+    if (searchQuery) {
+        filter.$or = [
+            { title: { $regex: searchQuery, $options: "i" } },
+            { location: { $regex: searchQuery, $options: "i" } },
+            { country: { $regex: searchQuery, $options: "i" } },
+        ];
+    }
+
+    const allListings = await Listing.find(filter);
+    res.render("index.ejs", { allListings, selectedCategory: req.query.category, searchQuery, categories });
 };
 
 module.exports.renderNewForm = (req, res) => {
-    res.render("new.ejs");
+    res.render("new.ejs", { categories });
 };
 
 module.exports.renderEditForm = async (req, res) => {
@@ -26,7 +38,7 @@ module.exports.renderEditForm = async (req, res) => {
         .populate("reviews")
         .populate("owner");
     if (!listing) throw new ExpressError(404, "Listing not found");
-    res.render("edit.ejs", { listing });
+    res.render("edit.ejs", { listing, categories });
 };
 
 module.exports.show = async (req, res) => {

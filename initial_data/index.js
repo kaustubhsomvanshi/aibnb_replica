@@ -77,7 +77,7 @@ module.exports = { initDB };
 
 if (require.main === module) {
   require("dotenv").config();
-  const mongoUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/wanderlust";
+  const mongoUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/roamly";
 
   mongoose.connect(mongoUrl)
     .then(initDB)

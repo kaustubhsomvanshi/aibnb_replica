@@ -65,9 +65,9 @@ if (listingMap) {
           iconAnchor: [16, 40],
           popupAnchor: [0, -40]
         })
-        const airbnbIcon = L.divIcon({
-          className: 'listing-marker-icon listing-marker-airbnb',
-          html: '<i class="fa-brands fa-airbnb"></i>',
+        const roamlyIcon = L.divIcon({
+          className: 'listing-marker-icon listing-marker-roamly',
+          html: '<i class="fa-solid fa-compass"></i>',
           iconSize: [40, 40],
           iconAnchor: [20, 40],
           popupAnchor: [0, -40]
@@ -76,7 +76,7 @@ if (listingMap) {
           .addTo(map)
           .bindPopup(searchQuery)
           .openPopup()
-        marker.on('mouseover', () => marker.setIcon(airbnbIcon))
+        marker.on('mouseover', () => marker.setIcon(roamlyIcon))
         marker.on('mouseout', () => marker.setIcon(pointerIcon))
       })
       .catch(() => {

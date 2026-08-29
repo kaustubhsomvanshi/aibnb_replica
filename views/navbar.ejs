@@ -1,27 +1,28 @@
 <nav class="navbar navbar-expand-md sticky-top">
-  <div class="container-fluid px-4 px-md-5">
-    <a class="navbar-brand d-flex align-items-center gap-2" href="/">
-      <i class="fa-brands fa-airbnb"></i>
-      <span>airbnb</span>
+  <div class="container-fluid site-nav-inner">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/listings">
+      <span class="brand-mark"><i class="fa-solid fa-compass"></i></span>
+      <span>Explore</span>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
+    <div class="navbar-search">
+      <form class="search-form" action="/listings" method="GET" role="search">
+        <input class="form-control search-input" name="q" type="search" value="<%= typeof searchQuery === 'string' ? searchQuery : '' %>" placeholder="Search destinations" aria-label="Search destinations">
+        <button class="btn btn-search" type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+    </div>
     <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
-      <div class="navbar-nav align-items-center gap-2">
-        <a class="nav-link" href="/listings">Explore stays</a>
-        <a class="nav-link" href="/listings/new">Become a host</a>
-        <a class="nav-link nav-pill" href="/listings/new">Add listing</a>
-      </div>
       <div class="navbar-nav align-items-center gap-2 ms-auto">
+        <a class="nav-link host-link" href="/listings/new">Roamly your home</a>
         <% if (currUser) { %>
           <span class="nav-link">Welcome, <%= currUser.username %>!</span>
-          <a class="nav-link" href="/logout">Log out</a>
+          <a class="nav-link" href="/logout"><b>Log out</b></a>
         <% } else { %>
-          <a class="nav-link" href="/login">Log in</a>
-          <a class="nav-link" href="/signup">Sign up</a>
+          <a class="nav-link" href="/signup"><b>Sign up</b></a>
+          <a class="nav-link" href="/login"><b>Log in</b></a>
         <% } %>
       </div>
     </div>

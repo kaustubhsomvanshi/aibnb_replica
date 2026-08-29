@@ -1,11 +1,17 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review");
+const { categoryValues } = require("../utils/categories");
 
 const listingSchema = new Schema({
   title: {
     type: String,
     required: true,
+  },
+  category: {
+    type: String,
+    enum: categoryValues,
+    default: "trending",
   },
   description: String,
   image: {

@@ -1,8 +1,10 @@
 const Joi = require("joi");
+const { categoryValues } = require("./utils/categories");
 
 module.exports.listingSchema = Joi.object({
   listing: Joi.object({
     title: Joi.string().required(),
+    category: Joi.string().valid(...categoryValues).default("trending"),
     description: Joi.string().required(),
     location: Joi.string().required(),
     country: Joi.string().required(),

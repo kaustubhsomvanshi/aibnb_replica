@@ -47,6 +47,18 @@
           Please provide a location.
         </div>
       </div>
+      <div class="mb-3">
+        <label for="category" class="form-label">Category</label>
+        <select name="listing[category]" id="category" class="form-select" required>
+          <option value="" selected disabled>Choose a category</option>
+          <% categories.forEach((category) => { %>
+            <option value="<%= category.value %>"><%= category.label %></option>
+          <% }); %>
+        </select>
+        <div class="invalid-feedback">
+          Please choose a category.
+        </div>
+      </div>
       <button class="btn btn-dark add-btn mt-3">Add</button>
     </form>
   </div>

@@ -13,7 +13,7 @@ module.exports.signup = async (req, res) => {
                 req.flash("error", err.message);
                 return res.redirect("/signup");
             }
-            req.flash("success", "Welcome to Airbnb!");
+            req.flash("success", "Welcome to Roamly!");
             res.redirect("/listings");
         });
     } catch (err) {
@@ -27,7 +27,7 @@ module.exports.renderLoginForm = (req, res) => {
 };
 
 module.exports.login = (req, res) => {
-    req.flash("success", "Welcome back to Wanderlust!");
+    req.flash("success", "Welcome back to Roamly!");
     res.redirect(res.locals.redirectUrl || "/listings");
 };
 
